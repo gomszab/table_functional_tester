@@ -1,5 +1,5 @@
 use headless_chrome::{Browser, FetcherOptions, LaunchOptionsBuilder};
-// use std::env
+use std::env;
 use std::{fs, path::Path};
 fn main() -> Result<(), failure::Error> {
     let options = LaunchOptionsBuilder::default()
@@ -13,50 +13,43 @@ fn main() -> Result<(), failure::Error> {
         .build()
         .unwrap();
 
-    // let mut args = env::args();
+    let mut args = env::args();
+    args.next();
+    if let Some(path) = args.next() {
+        let browser = Browser::new(options).unwrap();
+        println!("{:?}", path);
+        let tab = browser.new_tab().unwrap();
 
-    // if let Some(path) = args.next(){
+        tab.navigate_to(&format!("file:///{}", path)).unwrap();
 
-    let browser = Browser::new(options).unwrap();
+        tab.wait_until_navigated().unwrap();
 
-    let tab = browser.new_tab().unwrap();
+        let testcases_dir = Path::new("./testcases/rowspan");
+        let api_dir = Path::new("./testapi");
 
-    tab.navigate_to(&format!(
-        "file:///{}",
-        "dummy"
-    ))
-    .unwrap();
+        for entry in std::fs::read_dir(testcases_dir)? {
+            for jsapi in std::fs::read_dir(api_dir)? {
+                let path = jsapi?.path();
 
-    // tab.navigate_to(&format!("file:///{}", path)).unwrap();
+                let script = fs::read_to_string(&path)?;
 
-    tab.wait_until_navigated().unwrap();
+                tab.evaluate(&script, false).unwrap();
+            }
 
-    let testcases_dir = Path::new("./testcases/html");
-    let api_dir = Path::new("./testapi");   
+            let path = entry?.path();
 
-    for entry in std::fs::read_dir(testcases_dir)? {
-        for jsapi in std::fs::read_dir(api_dir)? {
-            let path = jsapi?.path();
-
-            let script = fs::read_to_string(&path)?;
-
-            tab.evaluate(&script, false).unwrap();
-        }
-
-        let path = entry?.path();
-
-        if path.extension().map(|ext| ext == "js").unwrap_or(false) {
-            println!("Running test from {:?}", path);
-            let script = fs::read_to_string(&path)?;
-            let result = tab.evaluate(&script, true).unwrap();
-            // println!("{:?}", result);
-            let test_passed = result.value.and_then(|v| v.as_bool()).unwrap_or(false);
-            println!("Test passed? {:?}", test_passed);
-            tab.reload(true, None).unwrap();
-            tab.wait_until_navigated().unwrap();
+            if path.extension().map(|ext| ext == "js").unwrap_or(false) {
+                println!("Running test from {:?}", path);
+                let script = fs::read_to_string(&path)?;
+                let result = tab.evaluate(&script, true).unwrap();
+                println!("{:?}", result);
+                let test_passed = result.value.and_then(|v| v.as_bool()).unwrap_or(false);
+                println!("Test passed? {:?}", test_passed);
+                tab.reload(true, None).unwrap();
+                tab.wait_until_navigated().unwrap();
+            }
         }
     }
-    // }
 
     Ok(())
 }
