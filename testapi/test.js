@@ -6,6 +6,24 @@ const test = async (callback) => {
 	}
 }
 
+(() => {
+  const originalAppendChild = Node.prototype.appendChild;
+  Node.prototype.appendChild = function (child) {
+    if (child instanceof Element) {
+      child.setAttribute('data-js-generated', 'true'); 
+    }
+    return originalAppendChild.call(this, child);
+  };
+
+  const originalPreventDefault = Event.prototype.preventDefault;
+
+  Event.prototype.preventDefault = function () {
+    if (this.type === 'submit') {
+      window.__submitPrevented = true;
+    }
+    return originalPreventDefault.apply(this, arguments);
+  };
+})();
 
 const triggerSubmit = (form) => {
 	const promise = promisifyEvent(form, 'submit', (e)=> e.preventDefault());

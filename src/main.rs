@@ -1,8 +1,9 @@
 mod generated_assets;
 
-use headless_chrome::{Browser, FetcherOptions, LaunchOptionsBuilder};
+use headless_chrome::{Browser, FetcherOptions, LaunchOptionsBuilder, protocol::cdp};
 use std::env;
-use std::{fs, path::Path};
+
+use crate::generated_assets::{ID_CONFIG, get_api_files, get_testcases_map};
 fn main() -> Result<(), failure::Error> {
     let options = LaunchOptionsBuilder::default()
         .fetcher_options(
@@ -21,37 +22,56 @@ fn main() -> Result<(), failure::Error> {
         let browser = Browser::new(options).unwrap();
         println!("{:?}", path);
         let tab = browser.new_tab().unwrap();
+        for value in get_api_files() {
+            let content = get_content_from_bytes(value);
+            tab.call_method(cdp::Page::AddScriptToEvaluateOnNewDocument {
+                source: content,
+                world_name: None,
+                include_command_line_api: None,
+                run_immediately: Some(true),
+            })
+            .unwrap();
+        }
 
         tab.navigate_to(&format!("file:///{}", path)).unwrap();
 
-        tab.wait_until_navigated().unwrap();
-
-        let testcases_dir = Path::new("./testcases/validationrowspan");
-        let api_dir = Path::new("./testapi");
-
-        for entry in std::fs::read_dir(testcases_dir)? {
-            for jsapi in std::fs::read_dir(api_dir)? {
-                let path = jsapi?.path();
-
-                let script = fs::read_to_string(&path)?;
-
-                tab.evaluate(&script, false).unwrap();
+        for (_key, value) in get_testcases_map() {
+            if value.typ != "checkbox" {
+                continue;
             }
+            let content_of_id = get_content_from_bytes(ID_CONFIG);
+            tab.evaluate(&content_of_id, false).unwrap();
 
-            let path = entry?.path();
+            tab.wait_until_navigated().unwrap();
 
-            if path.extension().map(|ext| ext == "js").unwrap_or(false) {
-                println!("Running test from {:?}", path);
-                let script = fs::read_to_string(&path)?;
-                let result = tab.evaluate(&script, true).unwrap();
-                println!("{:?}", result);
-                let test_passed = result.value.and_then(|v| v.as_bool()).unwrap_or(false);
-                println!("Test passed? {:?}", test_passed);
-                tab.reload(true, None).unwrap();
-                tab.wait_until_navigated().unwrap();
-            }
+            let script = get_content_from_bytes(&value.content);
+            println!("[{}]{}", value.typ, value.details);
+            let result = tab.evaluate(&script, true).unwrap();
+            // println!("{:?}", result);
+            match result.subtype {
+                Some(_error) => {
+                    if let Some(description) = result.description {
+                        let (err, _stack) = description
+                            .split_once("\n")
+                            .unwrap_or(("Ismeretlen hiba", ""));
+                        println!("{}", err);
+                    }
+                }
+                None => {
+                    let test_passed = result.value.and_then(|v| v.as_bool()).unwrap_or(false);
+                    println!("teszt passed: {}", test_passed);
+                }
+            };
+
+            tab.reload(true, None).unwrap();
         }
     }
-
     Ok(())
+}
+
+fn get_content_from_bytes(content: &'static [u8]) -> String {
+    match str::from_utf8(content) {
+        Ok(string_content) => String::from(string_content),
+        Err(_) => panic!("Nem sikerült a string konverzió"),
+    }
 }

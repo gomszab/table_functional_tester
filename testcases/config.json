@@ -1,8 +1,4 @@
 {
-    "colspantablebody": "htmltbody",
-    "rowspantablebody": "jstbody",
-    "rowspanformid": "",
-    "colspanformid": "",
     "testcases": [
         {
             "id": 1,
@@ -111,8 +107,54 @@
             "details": "validációs üzenet megjelenik ha csak a harmadik mező van kitöltve",
             "type": "rowspan",
             "file": "./testcases/validationrowspan/formvalidationonlythird.js"
+        },
+        {
+            "id": 19,
+            "details": "Csak 1 html táblázat van",
+            "type": "html",
+            "file": "./testcases/dombeforejs/checkhtmltable.js"
+        },
+        {
+            "id": 20,
+            "details": "Csak 1 html form van",
+            "type": "html",
+            "file": "./testcases/dombeforejs/checkhtmlform.js"
+        },
+        {
+            "id": 21,
+            "details": "A html táblázat szülőeleme el van rejtve",
+            "type": "html",
+            "file": "./testcases/dombeforejs/checkhtmldivhidden.js"
+        },
+        {
+            "id": 22,
+            "details": "A colspanos form esetében meghívódik a preventdefault submitkor",
+            "type": "colspan",
+            "file": "./testcases/colspan/preventdefaultcalledonsubmit.js"
+        },
+        {
+            "id": 23,
+            "details": "A rowspanos form esetében meghívódik a preventdefault submitkor",
+            "type": "rowspan",
+            "file": "./testcases/rowspan/preventdefaultcalledonsubmit.js"
+        },
+        {
+            "id": 24,
+            "details": "A checkbox alapértelmezett értéke",
+            "type": "checkbox",
+            "file": "./testcases/checkbox/defaultvaluecheck.js"
+        },
+        {
+            "id": 25,
+            "details": "A táblázatokat tartalmazó divek alapértelmezett megjelenítése",
+            "type": "checkbox",
+            "file": "./testcases/checkbox/defaultvisiblesection.js"
+        },
+        {
+            "id": 26,
+            "details": "A checkbox változtatásakor megváltozik a megjelenitendő szekció",
+            "type": "checkbox",
+            "file": "./testcases/checkbox/checkboxvaluechange.js"
         }
-    ],
-    "checkboxid": "",
-    "dropdownid": ""
+    ]
 }
