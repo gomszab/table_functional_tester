@@ -46,6 +46,7 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           TAG="v$(date +'%Y%m%d%H%M%S')"
+          echo "TAG=\"v$(date +'%Y%m%d%H%M%S')\"" >> $GITHUB_ENV
           git tag -a "$TAG" -m "Release tag created by GitHub Action"
           git push origin "$TAG"
         env:
@@ -55,9 +56,9 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.create_tag.outputs.TAG }}
-          name: Release from ${{ steps.create_tag.outputs.TAG }}
-          body: 'Release created manually from tag ${{ steps.create_tag.outputs.TAG }}'
+          tag_name: ${{ env.TAG }}
+          name: Release from ${{ env.TAG }}
+          body: 'Release created manually from tag ${{ env.TAG }}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
