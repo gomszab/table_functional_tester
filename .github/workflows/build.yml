@@ -6,7 +6,7 @@ on:
 # This workflow will trigger on each push to the `release` branch to create or update a GitHub release, build your app, and upload the artifacts to the release.
 
 jobs:
-  publish-tauri:
+  publish-app:
     permissions:
       contents: write
     strategy:
@@ -36,20 +36,24 @@ jobs:
       - name: Build release binary
         run: cargo build --release
 
+      - name: Set short SHA
+        id: vars
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       - name: Create GitHub Release
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.sha }}
-          name: Release from ${{ github.sha }}
-          body: 'Release created manually from commit ${{ github.sha }}'
+          tag_name: ${{ env.SHORT_SHA  }}
+          name: Release from ${{ env.SHORT_SHA  }}
+          body: 'Release created manually from commit ${{ env.SHORT_SHA  }}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload release binary
         uses: softprops/action-gh-release@v2
         with:
-          files: target/release/your_binary_name
+          files: target/${{ matrix.args == '' && 'release' || matrix.args }}/release/table_functional_tester${{ matrix.platform == 'windows-latest' && '.exe' || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
