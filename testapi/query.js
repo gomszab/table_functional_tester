@@ -1,5 +1,6 @@
 const queryTableById = (id, withRow = false) => {
     const table = document.body.querySelector(`table[id="${id}"]`);
+	assertNotUndefined(table, `"${id}" azonosítóval rendelkező table nincs`)
     if(!withRow){
         return [table] ;
     }
@@ -10,9 +11,7 @@ const queryTableById = (id, withRow = false) => {
 
 const queryTableByTbodyId = (id, withRow = false) => {
 	const table = document.body.querySelector(`table:has(tbody[id="${id}"])`);
-	if(!table){
-		throw new Error(`nincs ilyen ${id}`);
-	}
+	assertNotUndefined(table, `"${id}" azonosítóval rendelkező tbody nincs`)
 	if(!withRow){
 		return [table] ;
 	}
@@ -22,22 +21,16 @@ const queryTableByTbodyId = (id, withRow = false) => {
 
 
 const queryFormById = (id) => {
-	return document.body.querySelector(`form[id="${id}"]`);
+	const form = document.body.querySelector(`form[id="${id}"]`);
+	assertNotUndefined(form, `"${id}" azonosítóval rendelkező form nincs`)
+	return form;
 }
 
 
 const queryInputByIdOfForm = (form, inputId) => {
-	return form.querySelector(`input[id="${inputId}"]`);
-}
-
-
-const queryInputByNameOfForm = (form, name) => {
-	return form.querySelector(`input[name="${name}"]`);
-}
-
-
-const setInputValueByName = (form, name, value) => {
-	queryInputByNameOfForm(form, name).value = value;
+	const result = form.querySelector(`input[id="${inputId}"]`)
+	assertNotUndefined(result, `A ${form.id} nem tartalmaz ${inputId} azonosítójú elemet`)
+	return result;
 }
 
 
@@ -51,11 +44,6 @@ const getInputValueByid = (form, name) => {
 }
 
 
-const getInputValueByName = (form, name) => {
-	return queryInputByNameOfForm(form, name).value;
-}
-
-
 const queryFromBody = (query) => {
 	return document.body.querySelector(query)
 }
@@ -66,7 +54,9 @@ const queryAllFromBody = (query) => {
 }
 
 const getErrorFieldContentByInputId = (form, inputId) => {
-	return form.querySelector(`input[id="${inputId}"]+.error`).innerText;
+	const errorfield = form.querySelector(`input[id="${inputId}"]+.error`);
+	assertNotUndefined(errorfield, `${inputId} bevitelő mező mellett nincs error megjelenítésére szolgáló elem`)
+	return errorfield.innerText;
 }
 
 const mappingCellIndex = {

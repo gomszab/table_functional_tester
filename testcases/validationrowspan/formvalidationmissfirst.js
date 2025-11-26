@@ -1,9 +1,9 @@
 test(async () => {
-	const form = queryFormById(colform)
+	const form = queryFormById(rowform)
 	assertNotUndefined(form)
 
 
-	const [_table, originalRows ]= queryTableByTbodyId(coltablebody, true);
+	const [_table, originalRows ]= queryTableByTbodyId(rowtablebody, true);
 
 
 	setInputValueByid(form, 'masodik','Test item')
@@ -12,8 +12,8 @@ test(async () => {
 
 	await triggerSubmit(form)
 	
-	const [_, newRows ]= queryTableByTbodyId(coltablebody, true);
+	const [_, newRows ]= queryTableByTbodyId(rowtablebody, true);
     const errorMessageElso = getErrorFieldContentByInputId(form, 'elso');
-    assertNotEmptyString(errorMessageElso);
-	return assertEquals(originalRows, newRows, "Sort fűzött hozzá");
+    assertNotEmptyString(errorMessageElso, `1. beviteli mező erorüzenete nem jelenik meg`);
+	return assertEquals(originalRows, newRows, "Sort fűzött hozzá a táblázathoz a validáció ellenére");
 })

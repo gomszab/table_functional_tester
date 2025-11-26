@@ -5,5 +5,5 @@
 
     await triggerSubmit(form)
 
-    return assertEquals(true, window.__submitPrevented);
+    return assertEquals(true, window.__submitPrevented, "nincs megakadályozva a form alapértelmezett működésének lefutása");
  })

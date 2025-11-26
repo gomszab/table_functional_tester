@@ -1,4 +1,4 @@
 test(() => {
 	const tables = queryAllFromBody('table')
-	return assertEquals(2, tables.length);
+	return assertEquals(2, tables.length, "nem két táblázat van oldalon");
 })

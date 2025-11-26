@@ -45,13 +45,21 @@ fn main() -> Result<(), failure::Error> {
             println!("[{}]{}", value.typ, value.details);
             let result = tab.evaluate(&script, true).unwrap();
             // println!("{:?}", result.value);
-           
-           let test_passed = result.value.and_then(|v|  {
-            return Some(TESTRESULT::from(v))}).unwrap_or(TESTRESULT::FAILED(String::from("Ismeretlen hiba")));
+
+            let test_passed = result
+                .value
+                .and_then(|v| return Some(TESTRESULT::from(v)))
+                .unwrap_or(TESTRESULT::FAILED(String::from("Ismeretlen hiba")));
             match test_passed {
-                TESTRESULT::IGNORED => {println!("Teszt ignorált.")}
-                TESTRESULT::FAILED(msg) => { println!("{}", msg)}
-                TESTRESULT::SUCCESS => {println!("Teszt sikeres.")}
+                TESTRESULT::IGNORED => {
+                    println!("Teszt ignorált.")
+                }
+                TESTRESULT::FAILED(msg) => {
+                    println!("{}", msg)
+                }
+                TESTRESULT::SUCCESS => {
+                    println!("Teszt sikeres.")
+                }
             };
             tab.reload(true, None).unwrap();
         }
@@ -62,27 +70,26 @@ fn main() -> Result<(), failure::Error> {
 enum TESTRESULT {
     SUCCESS,
     IGNORED,
-    FAILED(String)
+    FAILED(String),
 }
 
-
-
-impl From<Value> for TESTRESULT{
+impl From<Value> for TESTRESULT {
     fn from(value: Value) -> Self {
-
-        if let Ok(value) = serde_json::from_str::<Value>(value.as_str().unwrap_or("{result: false, ignored: false}")) {
+        if let Ok(value) = serde_json::from_str::<Value>(
+            value.as_str().unwrap_or("{result: false, ignored: false}"),
+        ) {
             let result = value["result"].as_bool().unwrap_or(false);
             let message = value["message"].as_str().unwrap_or("Ismeretlen hiba");
             let ignored = value["ignored"].as_bool().unwrap_or(false);
-            
+
             if ignored {
                 Self::IGNORED
-            }else if result {
+            } else if result {
                 Self::SUCCESS
-            }else{
+            } else {
                 Self::FAILED(String::from(message))
             }
-        }else{
+        } else {
             Self::FAILED(String::from("Ismeretlen hiba"))
         }
     }

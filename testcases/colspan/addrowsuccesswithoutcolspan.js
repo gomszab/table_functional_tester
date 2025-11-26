@@ -17,13 +17,13 @@
     assertEquals(originalRows+1, newRows, "Nem adott hozza sort");
     const lastRow = getLastRowFromTableByTbodyId(coltablebody);
     assertEquals(4, lastRow.length);
-    assertEquals("Test item 1", lastRow[0].content);
-    assertEquals("Test item 2", lastRow[1].content);
-    assertEquals("Test item 3", lastRow[2].content);
-    assertEquals("Test item 4", lastRow[3].content);
+    assertEquals("Test item 1", lastRow[0].content, "A hozzáadott táblázathoz hozzáadott elem 1. oszlopának tartalma nem jó");
+    assertEquals("Test item 2", lastRow[1].content, "A hozzáadott táblázathoz hozzáadott elem 2. oszlopának tartalma nem jó");
+    assertEquals("Test item 3", lastRow[2].content, "A hozzáadott táblázathoz hozzáadott elem 3. oszlopának tartalma nem jó");
+    assertEquals("Test item 4", lastRow[3].content, "A hozzáadott táblázathoz hozzáadott elem 4. oszlopának tartalma nem jó");
     for(let i=0; i< lastRow.length; i++){
-        assertEquals(1, lastRow[2].colspan);
-        assertEquals(1, lastRow[2].rowspan);
+        assertEquals(1, lastRow[2].colspan, `A hozzáadott táblázathoz hozzáadott elem ${i+1}. oszlopának colspan értéke nem jó`);
+        assertEquals(1, lastRow[2].rowspan, `A hozzáadott táblázathoz hozzáadott elem ${i+1}. oszlopának rowspan értéke nem jó`);
     }
     return true;
  })
