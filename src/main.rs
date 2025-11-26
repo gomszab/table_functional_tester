@@ -1,10 +1,19 @@
 mod generated_assets;
+mod resultutil;
+mod test_config;
 
 use headless_chrome::{Browser, FetcherOptions, LaunchOptionsBuilder, protocol::cdp};
 use serde_json::Value;
-use std::env;
+use std::{
+    env, fs,
+    path::{Path, PathBuf},
+};
 
-use crate::generated_assets::{ID_CONFIG, get_api_files, get_testcases_map};
+use crate::{
+    generated_assets::{ID_CONFIG, get_api_files, get_testcases_map},
+    resultutil::ResultUtil,
+    test_config::TestConfig,
+};
 fn main() -> Result<(), failure::Error> {
     let options = LaunchOptionsBuilder::default()
         .fetcher_options(
@@ -35,23 +44,23 @@ fn main() -> Result<(), failure::Error> {
 
         tab.navigate_to(&format!("file:///{}", path)).unwrap();
 
+        let content_of_id = get_content_from_bytes(ID_CONFIG);
+        let content_of_id = parse_config(content_of_id, path);
         let onlytype = if let Some(onlytype) = args.next() {
             onlytype
         } else {
             String::new()
         };
 
-        let sumtestcount = get_testcases_map().len();
-        let mut success_test_count = 0;
-        let mut ignored_test_count = 0;
-        let mut errors = Vec::new();
+        let test_cases_map = get_testcases_map();
+        let mut result_util = ResultUtil::new(test_cases_map.len());
 
         for (key, value) in get_testcases_map() {
-            if onlytype != value.typ {
-                ignored_test_count += 1;
+            if !onlytype.is_empty() && onlytype != value.typ {
+                result_util.increment_ignored();
                 continue;
             }
-            let content_of_id = get_content_from_bytes(ID_CONFIG);
+
             tab.evaluate(&content_of_id, false).unwrap();
 
             tab.wait_until_navigated().unwrap();
@@ -59,7 +68,6 @@ fn main() -> Result<(), failure::Error> {
             let script = get_content_from_bytes(&value.content);
             println!("[{}]{}", value.typ, value.details);
             let result = tab.evaluate(&script, true).unwrap();
-            // println!("{:?}", result.value);
 
             let test_passed = result
                 .value
@@ -68,35 +76,23 @@ fn main() -> Result<(), failure::Error> {
             match test_passed {
                 TESTRESULT::IGNORED => {
                     println!("Teszt ignorált.");
-                    ignored_test_count += 1;
+                    result_util.increment_ignored();
                 }
                 TESTRESULT::FAILED(msg) => {
                     println!("{}", msg);
-                    errors.push(format!(
+                    result_util.push_error(format!(
                         "{} azonosítójú teszt: [{}] {}\n{}",
                         key, value.typ, value.details, msg
                     ));
                 }
                 TESTRESULT::SUCCESS => {
                     println!("Teszt sikeres.");
-                    success_test_count += 1;
+                    result_util.increment_success();
                 }
             };
             tab.reload(true, None).unwrap();
         }
-        println!(
-            "\n*********************************************************\n{} tesztből {} sikeres, {} sikertelen, {} kihagyott\n*********************************************************\n",
-            sumtestcount,
-            success_test_count,
-            errors.len(),
-            ignored_test_count
-        );
-        if errors.len() > 1 {
-            println!("A hibák a következők:");
-            for error in errors {
-                println!("\n{}", error);
-            }
-        }
+        println!("{}", result_util);
     }
     Ok(())
 }
@@ -134,4 +130,67 @@ fn get_content_from_bytes(content: &'static [u8]) -> String {
         Ok(string_content) => String::from(string_content),
         Err(_) => panic!("Nem sikerült a string konverzió"),
     }
+}
+
+fn parse_config(mut idconfig: String, html_path: String) -> String {
+    let html_path = Path::new(&html_path);
+    let dir = html_path.parent().expect("path has no parent directory");
+    let config_path: PathBuf = dir.join("config.json");
+    let config_json = fs::read_to_string(config_path).expect("cannot read config.json");
+    let config: TestConfig = serde_json::from_str(&config_json).expect("Invalid JSON");
+
+    idconfig = idconfig.replace("ROWTABLEBODY", &config.rowtablebody);
+    idconfig = idconfig.replace("COLTABLEBODY", &config.coltablebody);
+    idconfig = idconfig.replace("COLFORM", &config.colform);
+    idconfig = idconfig.replace("ROWFORM", &config.rowform);
+
+    idconfig = idconfig.replace(
+        "DEFAULTVISIBLE",
+        &config
+            .default_visible
+            .clone()
+            .unwrap_or_else(|| "undefined".to_string()),
+    );
+
+    idconfig = idconfig.replace(
+        "HASCHECKBOX",
+        if config.has_checkbox { "true" } else { "false" },
+    );
+
+    idconfig = idconfig.replace(
+        "CHECKBOXID",
+        &config
+            .checkbox_id
+            .clone()
+            .unwrap_or_else(|| "undefined".to_string()),
+    );
+
+    idconfig = idconfig.replace(
+        "CHECKBOXDEFAULT",
+        if config.checkbox_default { "true" } else { "false" },
+    );
+
+    idconfig = idconfig.replace(
+        "HASDROPDOWN",
+        if config.has_dropdown { "true" } else { "false" },
+    );
+
+    idconfig = idconfig.replace(
+        "DEFAULTSELECTED",
+        &config
+            .default_selected
+            .clone()
+            .unwrap_or_else(|| "undefined".to_string()),
+    );
+
+    idconfig = idconfig.replace(
+        "DEFAULTEMPTY",
+        if config.default_empty {
+            "true"
+        } else {
+            "false"
+        },
+    );
+    println!("{}", idconfig);
+    return idconfig;
 }

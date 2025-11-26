@@ -1,4 +1,4 @@
-test(() => {
+test(async () => {
     const sections = queryAllFromBody(`body > div`);
     assertEquals(2, sections.length, "Nem két div van a body tag alatt közvetlenül")
     for(const elem of sections){
