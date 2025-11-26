@@ -35,7 +35,22 @@ fn main() -> Result<(), failure::Error> {
 
         tab.navigate_to(&format!("file:///{}", path)).unwrap();
 
-        for (_key, value) in get_testcases_map() {
+        let onlytype = if let Some(onlytype) = args.next() {
+            onlytype
+        } else {
+            String::new()
+        };
+
+        let sumtestcount = get_testcases_map().len();
+        let mut success_test_count = 0;
+        let mut ignored_test_count = 0;
+        let mut errors = Vec::new();
+
+        for (key, value) in get_testcases_map() {
+            if onlytype != value.typ {
+                ignored_test_count += 1;
+                continue;
+            }
             let content_of_id = get_content_from_bytes(ID_CONFIG);
             tab.evaluate(&content_of_id, false).unwrap();
 
@@ -52,16 +67,35 @@ fn main() -> Result<(), failure::Error> {
                 .unwrap_or(TESTRESULT::FAILED(String::from("Ismeretlen hiba")));
             match test_passed {
                 TESTRESULT::IGNORED => {
-                    println!("Teszt ignorált.")
+                    println!("Teszt ignorált.");
+                    ignored_test_count += 1;
                 }
                 TESTRESULT::FAILED(msg) => {
-                    println!("{}", msg)
+                    println!("{}", msg);
+                    errors.push(format!(
+                        "{} azonosítójú teszt: [{}] {}\n{}",
+                        key, value.typ, value.details, msg
+                    ));
                 }
                 TESTRESULT::SUCCESS => {
-                    println!("Teszt sikeres.")
+                    println!("Teszt sikeres.");
+                    success_test_count += 1;
                 }
             };
             tab.reload(true, None).unwrap();
+        }
+        println!(
+            "\n*********************************************************\n{} tesztből {} sikeres, {} sikertelen, {} kihagyott\n*********************************************************\n",
+            sumtestcount,
+            success_test_count,
+            errors.len(),
+            ignored_test_count
+        );
+        if errors.len() > 1 {
+            println!("A hibák a következők:");
+            for error in errors {
+                println!("\n{}", error);
+            }
         }
     }
     Ok(())

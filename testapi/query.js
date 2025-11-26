@@ -45,7 +45,8 @@ const getInputValueByid = (form, name) => {
 
 
 const queryFromBody = (query) => {
-	return document.body.querySelector(query)
+	const result = document.body.querySelector(query);
+	return result
 }
 
 
