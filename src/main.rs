@@ -1,10 +1,10 @@
+mod config_generator;
 mod generated_assets;
 mod resultutil;
 mod test_config;
 mod test_runner;
-mod config_generator;
 
-use headless_chrome::{ FetcherOptions, LaunchOptionsBuilder};
+use headless_chrome::{FetcherOptions, LaunchOptionsBuilder};
 use std::env;
 
 use crate::{config_generator::run_generator, test_runner::run_tests};
@@ -23,10 +23,11 @@ fn main() -> Result<(), failure::Error> {
     let mut args = env::args();
     args.next();
     if let Some(param) = args.next() {
-        if param == "generator"{
+        if param == "generator" {
             run_generator();
-        }else{
-            run_tests(options, param, args);
+        } else {
+            let path = std::fs::canonicalize(param).expect("Nem található a fájl (rossz útvonal?)");
+            run_tests(options, path.into_os_string().into_string().unwrap(), args);
         }
     }
     Ok(())
