@@ -94,7 +94,6 @@ impl From<Value> for TESTRESULT {
             let result = value["result"].as_bool().unwrap_or(false);
             let message = value["message"].as_str().unwrap_or("Ismeretlen hiba");
             let ignored = value["ignored"].as_bool().unwrap_or(false);
-            println!("{}", ignored);
             if ignored {
                 Self::IGNORED
             } else if result {
@@ -114,8 +113,8 @@ fn parse_config(mut idconfig: String, html_path: String) -> String {
     let html_path = Path::new(&html_path);
     let dir = html_path.parent().expect("path has no parent directory");
     let config_path: PathBuf = dir.join("config.json");
-    let config_json = fs::read_to_string(config_path).expect("cannot read config.json");
-    let config: TestConfig = serde_json::from_str(&config_json).expect("Invalid JSON");
+    let config_json = fs::read_to_string(config_path).expect("Nem lehet beolvasni a json file-t az index mellett");
+    let config: TestConfig = serde_json::from_str(&config_json).expect("nem jó a json file");
 
     idconfig = idconfig.replace("ROWTABLEBODY", &config.rowtablebody);
     idconfig = idconfig.replace("COLTABLEBODY", &config.coltablebody);

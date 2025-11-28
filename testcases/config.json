@@ -166,7 +166,7 @@
             "id": 29,
             "details": "Ha üres értékre változtatunk, akkor nem jelenik meg táblázat sem",
             "type": "dropdown",
-            "file": "./testcases/dropdown/changetoempty.js" 
+            "file": "./testcases/dropdown/changetoempty.js"
         }
     ]
 }

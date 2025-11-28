@@ -10,118 +10,230 @@
     
     pub fn get_testcases_map() -> HashMap<u32, TestCaseData> {
         let mut m: HashMap<u32, TestCaseData> = HashMap::new();
-		m.insert(1, TestCaseData {
-			content: include_bytes!(".././testcases/colspan/addrowsuccesswithoutcolspan.js"),
-			details: "colspan táblázathoz hozzáadunk colspan nélküli sort",
-			typ: "colspan" });
-		m.insert(2, TestCaseData {
-			content: include_bytes!(".././testcases/colspan/addrowsuccesscolspan2.js"),
-			details: "colspan táblázathoz hozzáadunk colspanos sort",
-			typ: "colspan" });
-		m.insert(3, TestCaseData {
-			content: include_bytes!(".././testcases/rowspan/addsimplerow.js"),
-			details: "rowspanos táblázathoz hozzáadunk szimpla sort",
-			typ: "rowspan" });
-		m.insert(4, TestCaseData {
-			content: include_bytes!(".././testcases/rowspan/adddoublerow.js"),
-			details: "rowspanos táblázathoz hozzáadunk dupla sort",
-			typ: "rowspan" });
-		m.insert(5, TestCaseData {
-			content: include_bytes!(".././testcases/validationcolspan/formvalidationmissall.js"),
-			details: "validációs üzenetek megjelennek ha nincs kitöltve egy mező sem",
-			typ: "colspan" });
-		m.insert(6, TestCaseData {
-			content: include_bytes!(".././testcases/validationcolspan/formvalidationmissfirst.js"),
-			details: "validációs üzenet megjelenik ha nincs kitöltve az első mező",
-			typ: "colspan" });
-		m.insert(7, TestCaseData {
-			content: include_bytes!(".././testcases/validationcolspan/formvalidationmisssecond.js"),
-			details: "validációs üzenet megjelenik ha nincs kitöltve a második mező",
-			typ: "colspan" });
-		m.insert(8, TestCaseData {
-			content: include_bytes!(".././testcases/validationcolspan/formvalidationmissthird.js"),
-			details: "validációs üzenet megjelenik ha nincs kitöltve a harmadik mező",
-			typ: "colspan" });
-		m.insert(9, TestCaseData {
-			content: include_bytes!(".././testcases/validationcolspan/formvalidationonlyfirst.js"),
-			details: "validációs üzenet megjelenik ha csak az első mező van kitöltve",
-			typ: "colspan" });
-		m.insert(10, TestCaseData {
-			content: include_bytes!(".././testcases/validationcolspan/formvalidationonlysecond.js"),
-			details: "validációs üzenet megjelenik ha csak a második mező van kitöltve",
-			typ: "colspan" });
-		m.insert(11, TestCaseData {
-			content: include_bytes!(".././testcases/validationcolspan/formvalidationonlythird.js"),
-			details: "validációs üzenet megjelenik ha csak a harmadik mező van kitöltve",
-			typ: "colspan" });
-		m.insert(12, TestCaseData {
-			content: include_bytes!(".././testcases/validationrowspan/formvalidationmissall.js"),
-			details: "validációs üzenetek megjelennek ha nincs kitöltve egy mező sem",
-			typ: "rowspan" });
-		m.insert(13, TestCaseData {
-			content: include_bytes!(".././testcases/validationrowspan/formvalidationmissfirst.js"),
-			details: "validációs üzenet megjelenik ha nincs kitöltve az első mező",
-			typ: "rowspan" });
-		m.insert(14, TestCaseData {
-			content: include_bytes!(".././testcases/validationrowspan/formvalidationmisssecond.js"),
-			details: "validációs üzenet megjelenik ha nincs kitöltve a második mező",
-			typ: "rowspan" });
-		m.insert(15, TestCaseData {
-			content: include_bytes!(".././testcases/validationrowspan/formvalidationmissthird.js"),
-			details: "validációs üzenet megjelenik ha nincs kitöltve a harmadik mező",
-			typ: "rowspan" });
-		m.insert(16, TestCaseData {
-			content: include_bytes!(".././testcases/validationrowspan/formvalidationonlyfirst.js"),
-			details: "validációs üzenet megjelenik ha csak az első mező van kitöltve",
-			typ: "rowspan" });
-		m.insert(17, TestCaseData {
-			content: include_bytes!(".././testcases/validationrowspan/formvalidationonlysecond.js"),
-			details: "validációs üzenet megjelenik ha csak a második mező van kitöltve",
-			typ: "rowspan" });
-		m.insert(18, TestCaseData {
-			content: include_bytes!(".././testcases/validationrowspan/formvalidationonlythird.js"),
-			details: "validációs üzenet megjelenik ha csak a harmadik mező van kitöltve",
-			typ: "rowspan" });
-		m.insert(19, TestCaseData {
-			content: include_bytes!(".././testcases/dombeforejs/checkhtmltable.js"),
-			details: "Csak 1 html táblázat van",
-			typ: "html" });
-		m.insert(20, TestCaseData {
-			content: include_bytes!(".././testcases/dombeforejs/checkhtmlform.js"),
-			details: "Csak 1 html form van",
-			typ: "html" });
-		m.insert(22, TestCaseData {
-			content: include_bytes!(".././testcases/colspan/preventdefaultcalledonsubmit.js"),
-			details: "A colspanos form esetében meghívódik a preventdefault submitkor",
-			typ: "colspan" });
-		m.insert(23, TestCaseData {
-			content: include_bytes!(".././testcases/rowspan/preventdefaultcalledonsubmit.js"),
-			details: "A rowspanos form esetében meghívódik a preventdefault submitkor",
-			typ: "rowspan" });
-		m.insert(24, TestCaseData {
-			content: include_bytes!(".././testcases/checkbox/defaultvaluecheck.js"),
-			details: "A checkbox alapértelmezett értéke",
-			typ: "checkbox" });
-		m.insert(25, TestCaseData {
-			content: include_bytes!(".././testcases/checkbox/defaultvisiblesection.js"),
-			details: "A táblázatokat tartalmazó divek alapértelmezett megjelenítése",
-			typ: "checkbox" });
-		m.insert(26, TestCaseData {
-			content: include_bytes!(".././testcases/checkbox/checkboxvaluechange.js"),
-			details: "A checkbox változtatásakor megváltozik a megjelenitendő szekció",
-			typ: "checkbox" });
-		m.insert(27, TestCaseData {
-			content: include_bytes!(".././testcases/dropdown/defaultvisiblenothing.js"),
-			details: "Ha a lenyíló elem alapértelmezetten üres értékkel rendelkezik, akkor el vannak rejtve a táblázatok",
-			typ: "dropdown" });
-		m.insert(28, TestCaseData {
-			content: include_bytes!(".././testcases/dropdown/defaultselectedandshow.js"),
-			details: "Ha a lenyíló elem alapértelmezetten kiválasztással rendelkezik, akkor pontosan csak egy div jelenik meg",
-			typ: "dropdown" });
-		m.insert(29, TestCaseData {
-			content: include_bytes!(".././testcases/dropdown/changetoempty.js"),
-			details: "Ha üres értékre változtatunk, akkor nem jelenik meg táblázat sem",
-			typ: "dropdown" });
+		m.insert(
+			1,
+			TestCaseData {
+				content: include_bytes!(".././testcases/colspan/addrowsuccesswithoutcolspan.js"),
+				details: "colspan táblázathoz hozzáadunk colspan nélküli sort",
+				typ: "colspan"
+			}
+		);
+		m.insert(
+			2,
+			TestCaseData {
+				content: include_bytes!(".././testcases/colspan/addrowsuccesscolspan2.js"),
+				details: "colspan táblázathoz hozzáadunk colspanos sort",
+				typ: "colspan"
+			}
+		);
+		m.insert(
+			3,
+			TestCaseData {
+				content: include_bytes!(".././testcases/rowspan/addsimplerow.js"),
+				details: "rowspanos táblázathoz hozzáadunk szimpla sort",
+				typ: "rowspan"
+			}
+		);
+		m.insert(
+			4,
+			TestCaseData {
+				content: include_bytes!(".././testcases/rowspan/adddoublerow.js"),
+				details: "rowspanos táblázathoz hozzáadunk dupla sort",
+				typ: "rowspan"
+			}
+		);
+		m.insert(
+			5,
+			TestCaseData {
+				content: include_bytes!(".././testcases/validationcolspan/formvalidationmissall.js"),
+				details: "validációs üzenetek megjelennek ha nincs kitöltve egy mező sem",
+				typ: "colspan"
+			}
+		);
+		m.insert(
+			6,
+			TestCaseData {
+				content: include_bytes!(".././testcases/validationcolspan/formvalidationmissfirst.js"),
+				details: "validációs üzenet megjelenik ha nincs kitöltve az első mező",
+				typ: "colspan"
+			}
+		);
+		m.insert(
+			7,
+			TestCaseData {
+				content: include_bytes!(".././testcases/validationcolspan/formvalidationmisssecond.js"),
+				details: "validációs üzenet megjelenik ha nincs kitöltve a második mező",
+				typ: "colspan"
+			}
+		);
+		m.insert(
+			8,
+			TestCaseData {
+				content: include_bytes!(".././testcases/validationcolspan/formvalidationmissthird.js"),
+				details: "validációs üzenet megjelenik ha nincs kitöltve a harmadik mező",
+				typ: "colspan"
+			}
+		);
+		m.insert(
+			9,
+			TestCaseData {
+				content: include_bytes!(".././testcases/validationcolspan/formvalidationonlyfirst.js"),
+				details: "validációs üzenet megjelenik ha csak az első mező van kitöltve",
+				typ: "colspan"
+			}
+		);
+		m.insert(
+			10,
+			TestCaseData {
+				content: include_bytes!(".././testcases/validationcolspan/formvalidationonlysecond.js"),
+				details: "validációs üzenet megjelenik ha csak a második mező van kitöltve",
+				typ: "colspan"
+			}
+		);
+		m.insert(
+			11,
+			TestCaseData {
+				content: include_bytes!(".././testcases/validationcolspan/formvalidationonlythird.js"),
+				details: "validációs üzenet megjelenik ha csak a harmadik mező van kitöltve",
+				typ: "colspan"
+			}
+		);
+		m.insert(
+			12,
+			TestCaseData {
+				content: include_bytes!(".././testcases/validationrowspan/formvalidationmissall.js"),
+				details: "validációs üzenetek megjelennek ha nincs kitöltve egy mező sem",
+				typ: "rowspan"
+			}
+		);
+		m.insert(
+			13,
+			TestCaseData {
+				content: include_bytes!(".././testcases/validationrowspan/formvalidationmissfirst.js"),
+				details: "validációs üzenet megjelenik ha nincs kitöltve az első mező",
+				typ: "rowspan"
+			}
+		);
+		m.insert(
+			14,
+			TestCaseData {
+				content: include_bytes!(".././testcases/validationrowspan/formvalidationmisssecond.js"),
+				details: "validációs üzenet megjelenik ha nincs kitöltve a második mező",
+				typ: "rowspan"
+			}
+		);
+		m.insert(
+			15,
+			TestCaseData {
+				content: include_bytes!(".././testcases/validationrowspan/formvalidationmissthird.js"),
+				details: "validációs üzenet megjelenik ha nincs kitöltve a harmadik mező",
+				typ: "rowspan"
+			}
+		);
+		m.insert(
+			16,
+			TestCaseData {
+				content: include_bytes!(".././testcases/validationrowspan/formvalidationonlyfirst.js"),
+				details: "validációs üzenet megjelenik ha csak az első mező van kitöltve",
+				typ: "rowspan"
+			}
+		);
+		m.insert(
+			17,
+			TestCaseData {
+				content: include_bytes!(".././testcases/validationrowspan/formvalidationonlysecond.js"),
+				details: "validációs üzenet megjelenik ha csak a második mező van kitöltve",
+				typ: "rowspan"
+			}
+		);
+		m.insert(
+			18,
+			TestCaseData {
+				content: include_bytes!(".././testcases/validationrowspan/formvalidationonlythird.js"),
+				details: "validációs üzenet megjelenik ha csak a harmadik mező van kitöltve",
+				typ: "rowspan"
+			}
+		);
+		m.insert(
+			19,
+			TestCaseData {
+				content: include_bytes!(".././testcases/dombeforejs/checkhtmltable.js"),
+				details: "Csak 1 html táblázat van",
+				typ: "html"
+			}
+		);
+		m.insert(
+			20,
+			TestCaseData {
+				content: include_bytes!(".././testcases/dombeforejs/checkhtmlform.js"),
+				details: "Csak 1 html form van",
+				typ: "html"
+			}
+		);
+		m.insert(
+			22,
+			TestCaseData {
+				content: include_bytes!(".././testcases/colspan/preventdefaultcalledonsubmit.js"),
+				details: "A colspanos form esetében meghívódik a preventdefault submitkor",
+				typ: "colspan"
+			}
+		);
+		m.insert(
+			23,
+			TestCaseData {
+				content: include_bytes!(".././testcases/rowspan/preventdefaultcalledonsubmit.js"),
+				details: "A rowspanos form esetében meghívódik a preventdefault submitkor",
+				typ: "rowspan"
+			}
+		);
+		m.insert(
+			24,
+			TestCaseData {
+				content: include_bytes!(".././testcases/checkbox/defaultvaluecheck.js"),
+				details: "A checkbox alapértelmezett értéke",
+				typ: "checkbox"
+			}
+		);
+		m.insert(
+			25,
+			TestCaseData {
+				content: include_bytes!(".././testcases/checkbox/defaultvisiblesection.js"),
+				details: "A táblázatokat tartalmazó divek alapértelmezett megjelenítése",
+				typ: "checkbox"
+			}
+		);
+		m.insert(
+			26,
+			TestCaseData {
+				content: include_bytes!(".././testcases/checkbox/checkboxvaluechange.js"),
+				details: "A checkbox változtatásakor megváltozik a megjelenitendő szekció",
+				typ: "checkbox"
+			}
+		);
+		m.insert(
+			27,
+			TestCaseData {
+				content: include_bytes!(".././testcases/dropdown/defaultvisiblenothing.js"),
+				details: "Ha a lenyíló elem alapértelmezetten üres értékkel rendelkezik, akkor el vannak rejtve a táblázatok",
+				typ: "dropdown"
+			}
+		);
+		m.insert(
+			28,
+			TestCaseData {
+				content: include_bytes!(".././testcases/dropdown/defaultselectedandshow.js"),
+				details: "Ha a lenyíló elem alapértelmezetten kiválasztással rendelkezik, akkor pontosan csak egy div jelenik meg",
+				typ: "dropdown"
+			}
+		);
+		m.insert(
+			29,
+			TestCaseData {
+				content: include_bytes!(".././testcases/dropdown/changetoempty.js"),
+				details: "Ha üres értékre változtatunk, akkor nem jelenik meg táblázat sem",
+				typ: "dropdown"
+			}
+		);
     m
 }
 

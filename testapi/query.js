@@ -1,9 +1,9 @@
 const queryTableById = (id, withRow = false) => {
-    const table = document.body.querySelector(`table[id="${id}"]`);
+	const table = document.body.querySelector(`table[id="${id}"]`);
 	assertNotUndefined(table, `"${id}" azonosítóval rendelkező table nincs`)
-    if(!withRow){
-        return [table] ;
-    }
+	if (!withRow) {
+		return [table];
+	}
 	const rowNum = table.querySelectorAll('tbody tr').length;
 	return [table, rowNum];
 }
@@ -12,8 +12,8 @@ const queryTableById = (id, withRow = false) => {
 const queryTableByTbodyId = (id, withRow = false) => {
 	const table = document.body.querySelector(`table:has(tbody[id="${id}"])`);
 	assertNotUndefined(table, `"${id}" azonosítóval rendelkező tbody nincs`)
-	if(!withRow){
-		return [table] ;
+	if (!withRow) {
+		return [table];
 	}
 	const rowNum = table.querySelectorAll('tbody tr').length;
 	return [table, rowNum];
@@ -37,7 +37,6 @@ const queryInputByIdOfForm = (form, inputId) => {
 const setInputValueByid = (form, name, value) => {
 	queryInputByIdOfForm(form, name).value = value;
 }
-
 
 const getInputValueByid = (form, name) => {
 	return queryInputByIdOfForm(form, name).value;
@@ -73,7 +72,7 @@ const getLastRowFromTableByTbodyId = (tbodyid) => {
 	const lastrow = table.querySelector('tbody tr:last-child');
 	const cells = lastrow.querySelectorAll('td');
 	const result = [];
-	for(const [key, cell] of cells.entries()){
+	for (const [key, cell] of cells.entries()) {
 		result.push({
 			id: mappingCellIndex[key],
 			content: cell.innerText,
@@ -86,13 +85,13 @@ const getLastRowFromTableByTbodyId = (tbodyid) => {
 
 const getLastTwoRowFromTableByTbodyId = (tbodyid) => {
 	const [table] = queryTableByTbodyId(tbodyid)
-	const beforeLastRow =  table.querySelector('tbody tr:nth-last-child(2)');
+	const beforeLastRow = table.querySelector('tbody tr:nth-last-child(2)');
 	const lastrow = table.querySelector('tbody tr:last-child');
 	const cellsOfBeforeLast = beforeLastRow.querySelectorAll('td');
 	const cells = lastrow.querySelectorAll('td');
 	const mergedArray = [...Array.from(cellsOfBeforeLast), ...Array.from(cells)];
 	const result = [];
-	for(const [key, cell] of mergedArray.entries()){
+	for (const [key, cell] of mergedArray.entries()) {
 		result.push({
 			id: mappingCellIndex[key],
 			content: cell.innerText,

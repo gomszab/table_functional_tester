@@ -3,7 +3,7 @@ use std::{fs, io::{self, Write}, path::Path};
 use crate::test_config::TestConfig;
 
 pub fn run_generator(){
-    let folder_path_str = prompt_string("Enter the folder path containing index.html");
+    let folder_path_str = prompt_string("Add meg a könyvtárat ahol az index.html van (id fogom menteni a configot):");
     let folder_path = Path::new(&folder_path_str);
 
     // collect config fields
@@ -15,7 +15,7 @@ pub fn run_generator(){
         default_visible: prompt_optional_string("Az alapértelmezetten megjelenő div id-ja?"),
         has_checkbox: prompt_bool("Van-e checkbox az oldalon?"),
         checkbox_id: prompt_optional_string("Mi a checkbox id-ja?"),
-        checkbox_default: prompt_optional_bool("Mi a checkbox alapértelmezett id-ja?"),
+        checkbox_default: prompt_optional_bool("Mi a checkbox alapértelmezett értéke?"),
         has_dropdown: prompt_bool("Van-e select az oldalon?"),
         dropdown_id: prompt_optional_string("Mi a select id-ja?"),
         default_selected: prompt_optional_string("Mi az alapértelmezetten kiválasztott?"),
@@ -53,7 +53,7 @@ fn prompt_bool(prompt: &str) -> bool {
 }
 
 fn prompt_optional_string(prompt: &str) -> Option<String> {
-    let input = prompt_string(&format!("{} (opcionális, empty for none)", prompt));
+    let input = prompt_string(&format!("{} (opcionális, nyomj entert, ha nincs rá szükséged)", prompt));
     if input.is_empty() {
         None
     } else {
@@ -63,7 +63,7 @@ fn prompt_optional_string(prompt: &str) -> Option<String> {
 
 fn prompt_optional_bool(prompt: &str) -> Option<bool> {
     loop {
-        let input = prompt_string(&format!("{} (true = 1 /false = 0 or empty for none)", prompt));
+        let input = prompt_string(&format!("{} (opcionális true = 1 /false = 0 vagy nyomj entert, ha nincs rá szükséged)", prompt));
         if input.is_empty() {
             return None;
         }
