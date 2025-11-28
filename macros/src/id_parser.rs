@@ -1,8 +1,11 @@
 // myproj-macros/src/lib.rs
 extern crate proc_macro;
-use quote:: quote;
-use syn::{Attribute, DeriveInput, Error, Fields, GenericArgument, LitStr, PathArguments, Type, parse_macro_input};
+use quote::quote;
 use syn::Ident;
+use syn::{
+    Attribute, DeriveInput, Error, Fields, GenericArgument, LitStr, PathArguments, Type,
+    parse_macro_input,
+};
 
 pub fn derive_template_config(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
@@ -38,7 +41,6 @@ pub fn derive_template_config(input: proc_macro::TokenStream) -> proc_macro::Tok
                     }
                 })
                 .next();
-
 
             let Some(value) = macro_value else {
                 errors.push(Error::new_spanned(
@@ -79,14 +81,15 @@ fn parse_macro_value(attr: &Attribute) -> Option<String> {
     let mut captured = None;
 
     attr.parse_nested_meta(|meta| {
-        if meta.path.is_ident("value"){
+        if meta.path.is_ident("value") {
             let value = meta.value()?;
             let s: LitStr = value.parse()?;
-            
+
             captured = Some(s.value());
         }
         Ok(())
-    }).unwrap();
+    })
+    .unwrap();
     captured
 }
 
@@ -126,25 +129,27 @@ fn generate_replacement(
 }
 
 fn is_string_type(ty_path: &syn::TypePath) -> bool {
-    ty_path.path.segments.len() == 1 &&
-    ty_path.path.is_ident("String")
+    ty_path.path.segments.len() == 1 && ty_path.path.is_ident("String")
 }
 
 fn is_bool_type(ty_path: &syn::TypePath) -> bool {
-    ty_path.path.segments.len() == 1 &&
-    ty_path.path.is_ident("bool")
+    ty_path.path.segments.len() == 1 && ty_path.path.is_ident("bool")
 }
 
 fn is_option_string_type(ty_path: &syn::TypePath) -> bool {
-    if let PathArguments::AngleBracketed(args) =  &ty_path.path.segments[0].arguments && let GenericArgument::Type(Type::Path(kk)) = &args.args[0] {
-       return kk.path.is_ident("String");
+    if let PathArguments::AngleBracketed(args) = &ty_path.path.segments[0].arguments
+        && let GenericArgument::Type(Type::Path(kk)) = &args.args[0]
+    {
+        return kk.path.is_ident("String");
     }
     false
 }
 
 fn is_option_bool_type(ty_path: &syn::TypePath) -> bool {
-    if let PathArguments::AngleBracketed(args) =  &ty_path.path.segments[0].arguments && let GenericArgument::Type(Type::Path(kk)) = &args.args[0] {
-       return kk.path.is_ident("bool");
+    if let PathArguments::AngleBracketed(args) = &ty_path.path.segments[0].arguments
+        && let GenericArgument::Type(Type::Path(kk)) = &args.args[0]
+    {
+        return kk.path.is_ident("bool");
     }
-   false
+    false
 }

@@ -2,7 +2,7 @@ use macros::TemplateConfig;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, TemplateConfig)]
-pub struct TestConfig { 
+pub struct TestConfig {
     #[templateid(value = "ROWTABLEBODY")]
     pub rowtablebody: String,
     #[templateid(value = "COLTABLEBODY")]

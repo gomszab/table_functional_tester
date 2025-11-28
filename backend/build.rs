@@ -65,9 +65,8 @@ fn main() {
     api_files_code.push_str("    ]\n}\n\n");
 
     // Prepare code snippet for idconfig standalone constant
-    let idconfig_code = format!(
-        "pub const ID_CONFIG: &[u8] = include_bytes!(\"../{idconfig}\");\n"
-    );
+    let idconfig_code =
+        format!("pub const ID_CONFIG: &[u8] = include_bytes!(\"../{idconfig}\");\n");
 
     let out_path = Path::new(&manifest_dir).join("../generated/src/generated_assets.rs");
     let mut out_file = File::create(out_path).unwrap();

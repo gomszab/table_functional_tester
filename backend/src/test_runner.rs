@@ -47,7 +47,8 @@ pub fn run_tests(options: LaunchOptions<'_>, param: String, mut args: Args) {
         let result = tab.evaluate(&script, true).unwrap();
 
         let test_passed = result
-            .value.map(Testresult::from)
+            .value
+            .map(Testresult::from)
             .unwrap_or(Testresult::Failed(String::from("Ismeretlen hiba")));
         match test_passed {
             Testresult::Ignored => {
@@ -105,7 +106,7 @@ impl From<Value> for Testresult {
     }
 }
 
-fn parse_config(mut idconfig: String, html_path: String) -> String {
+fn parse_config(idconfig: String, html_path: String) -> String {
     let html_path = Path::new(&html_path);
     let dir = html_path.parent().expect("path has no parent directory");
     let config_path: PathBuf = dir.join("config.json");
@@ -114,5 +115,4 @@ fn parse_config(mut idconfig: String, html_path: String) -> String {
     let config: TestConfig = serde_json::from_str(&config_json).expect("nem jó a json file");
 
     config.wrap_id(idconfig)
-
 }
