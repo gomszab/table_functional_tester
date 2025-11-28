@@ -44,9 +44,9 @@ impl Display for ResultUtil {
         if self.errors.len() > 1 {
             result.push_str("A hibák a következők:");
             for error in &self.errors {
-                result.push_str(&format!("\n{}", error));
+                result.push_str(&format!("\n{error}"));
             }
         }
-        f.write_fmt(format_args!("{}", result))
+        f.write_fmt(format_args!("{result}"))
     }
 }

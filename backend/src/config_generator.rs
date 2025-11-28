@@ -27,7 +27,7 @@ pub fn run_generator() {
         default_empty: prompt_optional_bool("Alapértelmezetten üres-e a dropdownlist értéke?"),
     };
 
-    if config.has_checkbox == true || config.has_dropdown == true {
+    if config.has_checkbox || config.has_dropdown {
         let json_str = serde_json::to_string_pretty(&config).unwrap();
         let config_path = folder_path.join("config.json");
         fs::write(config_path, json_str).unwrap();
@@ -40,7 +40,7 @@ pub fn run_generator() {
 }
 
 fn prompt_string(prompt: &str) -> String {
-    print!("{}: ", prompt);
+    print!("{prompt}: ");
     io::stdout().flush().unwrap();
     let mut input = String::new();
     io::stdin().read_line(&mut input).unwrap();
@@ -49,7 +49,7 @@ fn prompt_string(prompt: &str) -> String {
 
 fn prompt_bool(prompt: &str) -> bool {
     loop {
-        let input = prompt_string(&format!("{} (1 = true/ 0 = false)", prompt));
+        let input = prompt_string(&format!("{prompt} (1 = true/ 0 = false)"));
         match input.to_lowercase().as_str() {
             "1" => return true,
             "0" => return false,
@@ -60,8 +60,7 @@ fn prompt_bool(prompt: &str) -> bool {
 
 fn prompt_optional_string(prompt: &str) -> Option<String> {
     let input = prompt_string(&format!(
-        "{} (opcionális, nyomj entert, ha nincs rá szükséged)",
-        prompt
+        "{prompt} (opcionális, nyomj entert, ha nincs rá szükséged)"
     ));
     if input.is_empty() { None } else { Some(input) }
 }
@@ -69,8 +68,7 @@ fn prompt_optional_string(prompt: &str) -> Option<String> {
 fn prompt_optional_bool(prompt: &str) -> Option<bool> {
     loop {
         let input = prompt_string(&format!(
-            "{} (opcionális true = 1 /false = 0 vagy nyomj entert, ha nincs rá szükséged)",
-            prompt
+            "{prompt} (opcionális true = 1 /false = 0 vagy nyomj entert, ha nincs rá szükséged)"
         ));
         if input.is_empty() {
             return None;

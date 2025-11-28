@@ -23,15 +23,11 @@ pub fn run_tests(options: LaunchOptions<'_>, param: String, mut args: Args) {
         .unwrap();
     }
 
-    tab.navigate_to(&format!("file:///{}", param)).unwrap();
+    tab.navigate_to(&format!("file:///{param}")).unwrap();
 
     let content_of_id = get_content_from_bytes(ID_CONFIG);
     let content_of_id = parse_config(content_of_id, param);
-    let onlytype = if let Some(onlytype) = args.next() {
-        onlytype
-    } else {
-        String::new()
-    };
+    let onlytype = args.next().unwrap_or_default();
 
     let test_cases_map = get_testcases_map();
     let mut result_util = ResultUtil::new(test_cases_map.len());
@@ -46,34 +42,33 @@ pub fn run_tests(options: LaunchOptions<'_>, param: String, mut args: Args) {
 
         tab.wait_until_navigated().unwrap();
 
-        let script = get_content_from_bytes(&value.content);
+        let script = get_content_from_bytes(value.content);
         println!("[{}]{}", value.typ, value.details);
         let result = tab.evaluate(&script, true).unwrap();
 
         let test_passed = result
-            .value
-            .and_then(|v| return Some(TESTRESULT::from(v)))
-            .unwrap_or(TESTRESULT::FAILED(String::from("Ismeretlen hiba")));
+            .value.map(Testresult::from)
+            .unwrap_or(Testresult::Failed(String::from("Ismeretlen hiba")));
         match test_passed {
-            TESTRESULT::IGNORED => {
+            Testresult::Ignored => {
                 println!("Teszt ignorált.");
                 result_util.increment_ignored();
             }
-            TESTRESULT::FAILED(msg) => {
-                println!("{}", msg);
+            Testresult::Failed(msg) => {
+                println!("{msg}");
                 result_util.push_error(format!(
                     "{} azonosítójú teszt: [{}] {}\n{}",
                     key, value.typ, value.details, msg
                 ));
             }
-            TESTRESULT::SUCCESS => {
+            Testresult::Success => {
                 println!("Teszt sikeres.");
                 result_util.increment_success();
             }
         };
         tab.reload(true, None).unwrap();
     }
-    println!("{}", result_util);
+    println!("{result_util}");
 }
 
 fn get_content_from_bytes(content: &'static [u8]) -> String {
@@ -83,13 +78,13 @@ fn get_content_from_bytes(content: &'static [u8]) -> String {
     }
 }
 
-enum TESTRESULT {
-    SUCCESS,
-    IGNORED,
-    FAILED(String),
+enum Testresult {
+    Success,
+    Ignored,
+    Failed(String),
 }
 
-impl From<Value> for TESTRESULT {
+impl From<Value> for Testresult {
     fn from(value: Value) -> Self {
         if let Ok(value) = serde_json::from_str::<Value>(
             value.as_str().unwrap_or("{result: false, ignored: false}"),
@@ -98,14 +93,14 @@ impl From<Value> for TESTRESULT {
             let message = value["message"].as_str().unwrap_or("Ismeretlen hiba");
             let ignored = value["ignored"].as_bool().unwrap_or(false);
             if ignored {
-                Self::IGNORED
+                Self::Ignored
             } else if result {
-                Self::SUCCESS
+                Self::Success
             } else {
-                Self::FAILED(String::from(message))
+                Self::Failed(String::from(message))
             }
         } else {
-            Self::FAILED(String::from("Ismeretlen hiba"))
+            Self::Failed(String::from("Ismeretlen hiba"))
         }
     }
 }
@@ -118,62 +113,6 @@ fn parse_config(mut idconfig: String, html_path: String) -> String {
         .expect("Nem lehet beolvasni a json file-t az index mellett");
     let config: TestConfig = serde_json::from_str(&config_json).expect("nem jó a json file");
 
-    idconfig = idconfig.replace("ROWTABLEBODY", &config.rowtablebody);
-    idconfig = idconfig.replace("COLTABLEBODY", &config.coltablebody);
-    idconfig = idconfig.replace("COLFORM", &config.colform);
-    idconfig = idconfig.replace("ROWFORM", &config.rowform);
+    config.wrap_id(idconfig)
 
-    idconfig = idconfig.replace(
-        "DEFAULTVISIBLE",
-        &config
-            .default_visible
-            .clone()
-            .unwrap_or_else(|| "undefined".to_string()),
-    );
-
-    idconfig = idconfig.replace(
-        "HASCHECKBOX",
-        if config.has_checkbox { "true" } else { "false" },
-    );
-
-    idconfig = idconfig.replace(
-        "CHECKBOXID",
-        &config.checkbox_id.clone().unwrap_or_else(|| "".to_string()),
-    );
-
-    idconfig = idconfig.replace(
-        "CHECKBOXDEFAULT",
-        &config
-            .checkbox_default
-            .map(|v| v.to_string())
-            .unwrap_or_else(|| "false".to_string()),
-    );
-
-    idconfig = idconfig.replace(
-        "HASDROPDOWN",
-        if config.has_dropdown { "true" } else { "false" },
-    );
-
-    idconfig = idconfig.replace(
-        "DROPDOWN_ID",
-        &config.dropdown_id.clone().unwrap_or_else(|| "".to_string()),
-    );
-
-    idconfig = idconfig.replace(
-        "DEFAULTSELECTED",
-        &config
-            .default_selected
-            .clone()
-            .unwrap_or_else(|| "".to_string()),
-    );
-
-    idconfig = idconfig.replace(
-        "DEFAULTEMPTY",
-        &config
-            .checkbox_default
-            .map(|v| v.to_string())
-            .unwrap_or_else(|| "undefined".to_string()),
-    );
-    println!("{}", idconfig);
-    return idconfig;
 }
