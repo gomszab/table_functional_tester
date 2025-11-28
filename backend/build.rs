@@ -19,7 +19,7 @@ const HEADER_GENERATED: &'static str = r#"
 
 fn main() {
     let manifest_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
-    let config_path = format!("{}/testcases/config.json", manifest_dir);
+    let config_path = format!("{}/../testcases/config.json", manifest_dir);
 
     let json_str = fs::read_to_string(&config_path).expect("Failed to read config.json");
     let json: serde_json::Value = serde_json::from_str(&json_str).expect("Invalid JSON");
@@ -37,12 +37,12 @@ fn main() {
         let details = testcase["details"].as_str().unwrap().replace("\"", "\\\"");
         let typ = testcase["type"].as_str().unwrap().replace("\"", "\\\"");
         generated.push_str(&format!(
-        "\t\tm.insert(\n\t\t\t{},\n\t\t\tTestCaseData {{\n\t\t\t\tcontent: include_bytes!(\"../{}\"),\n\t\t\t\tdetails: \"{}\",\n\t\t\t\ttyp: \"{}\"\n\t\t\t}}\n\t\t);\n",
+        "\t\tm.insert(\n\t\t\t{},\n\t\t\tTestCaseData {{\n\t\t\t\tcontent: include_bytes!(\"../../{}\"),\n\t\t\t\tdetails: \"{}\",\n\t\t\t\ttyp: \"{}\"\n\t\t\t}}\n\t\t);\n",
         id, file_path, details, typ));
     }
     generated.push_str("    m\n}\n\n");
 
-    let api_config_path = format!("{}/testapi/config.json", manifest_dir);
+    let api_config_path = format!("{}/../testapi/config.json", manifest_dir);
     let api_config_str =
         fs::read_to_string(&api_config_path).expect("Failed to read api_config.json");
     let api_config_json: serde_json::Value =
@@ -61,17 +61,17 @@ fn main() {
     api_files_code.push_str("    vec![\n");
     for file_value in apifiles {
         let file_path = file_value.as_str().unwrap();
-        api_files_code.push_str(&format!("        include_bytes!(\"{}\"),\n", file_path));
+        api_files_code.push_str(&format!("        include_bytes!(\"../{}\"),\n", file_path));
     }
     api_files_code.push_str("    ]\n}\n\n");
 
     // Prepare code snippet for idconfig standalone constant
     let idconfig_code = format!(
-        "pub const ID_CONFIG: &[u8] = include_bytes!(\"{}\");\n",
+        "pub const ID_CONFIG: &[u8] = include_bytes!(\"../{}\");\n",
         idconfig
     );
 
-    let out_path = Path::new(&manifest_dir).join("src/generated_assets.rs");
+    let out_path = Path::new(&manifest_dir).join("../generated/src/generated_assets.rs");
     let mut out_file = File::create(out_path).unwrap();
     out_file.write_all(generated.as_bytes()).unwrap();
     out_file.write_all(api_files_code.as_bytes()).unwrap();

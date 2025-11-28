@@ -1,9 +1,14 @@
-use std::{fs, io::{self, Write}, path::Path};
+use std::{
+    fs,
+    io::{self, Write},
+    path::Path,
+};
 
 use crate::test_config::TestConfig;
 
-pub fn run_generator(){
-    let folder_path_str = prompt_string("Add meg a könyvtárat ahol az index.html van (id fogom menteni a configot):");
+pub fn run_generator() {
+    let folder_path_str =
+        prompt_string("Add meg a könyvtárat ahol az index.html van (id fogom menteni a configot):");
     let folder_path = Path::new(&folder_path_str);
 
     // collect config fields
@@ -22,15 +27,16 @@ pub fn run_generator(){
         default_empty: prompt_optional_bool("Alapértelmezetten üres-e a dropdownlist értéke?"),
     };
 
-    if config.has_checkbox == true || config.has_dropdown == true{
+    if config.has_checkbox == true || config.has_dropdown == true {
         let json_str = serde_json::to_string_pretty(&config).unwrap();
         let config_path = folder_path.join("config.json");
         fs::write(config_path, json_str).unwrap();
         println!("config.json elmentve.");
-    }else{
-        println!("Nem adtál meg sem checkboxot, sem pedig select-t, az egyiknek legalább kell lennie");
+    } else {
+        println!(
+            "Nem adtál meg sem checkboxot, sem pedig select-t, az egyiknek legalább kell lennie"
+        );
     }
-   
 }
 
 fn prompt_string(prompt: &str) -> String {
@@ -53,17 +59,19 @@ fn prompt_bool(prompt: &str) -> bool {
 }
 
 fn prompt_optional_string(prompt: &str) -> Option<String> {
-    let input = prompt_string(&format!("{} (opcionális, nyomj entert, ha nincs rá szükséged)", prompt));
-    if input.is_empty() {
-        None
-    } else {
-        Some(input)
-    }
+    let input = prompt_string(&format!(
+        "{} (opcionális, nyomj entert, ha nincs rá szükséged)",
+        prompt
+    ));
+    if input.is_empty() { None } else { Some(input) }
 }
 
 fn prompt_optional_bool(prompt: &str) -> Option<bool> {
     loop {
-        let input = prompt_string(&format!("{} (opcionális true = 1 /false = 0 vagy nyomj entert, ha nincs rá szükséged)", prompt));
+        let input = prompt_string(&format!(
+            "{} (opcionális true = 1 /false = 0 vagy nyomj entert, ha nincs rá szükséged)",
+            prompt
+        ));
         if input.is_empty() {
             return None;
         }

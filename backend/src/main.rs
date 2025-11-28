@@ -1,5 +1,4 @@
 mod config_generator;
-mod generated_assets;
 mod resultutil;
 mod test_config;
 mod test_runner;
