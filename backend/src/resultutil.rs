@@ -41,7 +41,7 @@ impl Display for ResultUtil {
             self.errors.len(),
             self.ignored_test_count
         );
-        if self.errors.len() > 1 {
+        if !self.errors.is_empty() {
             result.push_str("A hibák a következők:");
             for error in &self.errors {
                 result.push_str(&format!("\n{error}"));

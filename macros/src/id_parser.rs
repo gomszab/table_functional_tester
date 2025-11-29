@@ -104,12 +104,15 @@ fn generate_replacement(
     match field_ty {
         syn::Type::Path(ty_path) if is_string_type(ty_path) => {
             quote! {
-                template = template.replace(#value, &#field_access);
+                template = template.replace(#value, &format!("'{}'",&#field_access));
             }
         }
         syn::Type::Path(ty_path) if is_option_string_type(ty_path) => {
             quote! {
-                template = template.replace(#value, &#field_access.clone().unwrap_or_else(|| "undefined".to_string()));
+                let val = self.#field_name.as_ref()
+            .map(|v| format!("'{}'", v))
+            .unwrap_or_else(|| "null".to_string());
+                template = template.replace(#value, &val);
             }
         }
         syn::Type::Path(ty_path) if is_bool_type(ty_path) => {
@@ -119,7 +122,7 @@ fn generate_replacement(
         }
         syn::Type::Path(ty_path) if is_option_bool_type(ty_path) => {
             quote! {
-                template = template.replace(#value, &#field_access.map(|v| v.to_string()).unwrap_or_else(|| "false".to_string()));
+                template = template.replace(#value, &#field_access.map(|v| v.to_string()).unwrap_or_else(|| "null".to_string()));
             }
         }
         _ => quote! {

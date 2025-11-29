@@ -113,6 +113,5 @@ fn parse_config(idconfig: String, html_path: String) -> String {
     let config_json = fs::read_to_string(config_path)
         .expect("Nem lehet beolvasni a json file-t az index mellett");
     let config: TestConfig = serde_json::from_str(&config_json).expect("nem jó a json file");
-
     config.wrap_id(idconfig)
 }

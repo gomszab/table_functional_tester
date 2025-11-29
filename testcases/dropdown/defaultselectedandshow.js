@@ -12,4 +12,4 @@ test(async () => {
 
     }
     return true;
-}, hascheckbox || !defaultSelected)
+}, hascheckbox || defaultEmpty)
