@@ -3,6 +3,8 @@
   "coltablebody": "htmltbody",
   "colform": "htmlform",
   "rowform": "jsform",
+  "js_section_id": "jssection",
+  "html_section_id": "htmlsection",
   "default_visible": "htmlsection",
   "has_checkbox": true,
   "checkbox_id": "tableselector",
