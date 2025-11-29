@@ -10,3 +10,5 @@ window.hasDropdown = HASDROPDOWN;
 window.dropdownId = DROPDOWN_ID;
 window.defaultSelected = DEFAULTSELECTED;
 window.defaultEmpty = DEFAULTEMPTY;
+window.htmlSection = HTMLSECTION;
+window.jsSection = JSSECTION;

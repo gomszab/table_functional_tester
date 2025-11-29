@@ -167,6 +167,12 @@
             "details": "Ha üres értékre változtatunk, akkor nem jelenik meg táblázat sem",
             "type": "dropdown",
             "file": "./testcases/dropdown/changetoempty.js"
+        },
+        {
+            "id": 30,
+            "details": "Megváltoztatjuk melyik táblázat jelenjen meg.",
+            "type": "dropdown",
+            "file": "./testcases/dropdown/changeshowtable.js"
         }
     ]
 }

@@ -17,6 +17,8 @@ pub fn run_generator() {
         coltablebody: prompt_string("A colspanos tbody id-ja?"),
         colform: prompt_string("A colspanos táblázathoz tartozó form id-ja?"),
         rowform: prompt_string("A rowspanos táblázathoz tartozó form id-ja?"),
+        html_section_id:prompt_string("A html div-jének az id-ja?"),
+        js_section_id:prompt_string("A js div-jének az id-ja?"),
         default_visible: prompt_optional_string("Az alapértelmezetten megjelenő div id-ja?"),
         has_checkbox: prompt_bool("Van-e checkbox az oldalon?"),
         checkbox_id: prompt_optional_string("Mi a checkbox id-ja?"),
@@ -25,6 +27,7 @@ pub fn run_generator() {
         dropdown_id: prompt_optional_string("Mi a select id-ja?"),
         default_selected: prompt_optional_string("Mi az alapértelmezetten kiválasztott?"),
         default_empty: prompt_optional_bool("Alapértelmezetten üres-e a dropdownlist értéke?"),
+
     };
 
     if config.has_checkbox || config.has_dropdown {

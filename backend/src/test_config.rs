@@ -11,6 +11,10 @@ pub struct TestConfig {
     pub colform: String,
     #[templateid(value = "ROWFORM")]
     pub rowform: String,
+    #[templateid(value = "HTMLSECTION")]
+    pub html_section_id: String,
+    #[templateid(value = "JSSECTION")]
+    pub js_section_id: String,
     #[templateid(value = "DEFAULTVISIBLE")]
     pub default_visible: Option<String>,
     #[templateid(value = "HASCHECKBOX")]
