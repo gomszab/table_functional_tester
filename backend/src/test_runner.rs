@@ -1,15 +1,14 @@
 use std::{
-    env::Args,
     fs,
     path::{Path, PathBuf},
 };
 
-use crate::{resultutil::ResultUtil, test_config::TestConfig};
+use crate::{arguments::RunMode, resultutil::ResultUtil, test_config::TestConfig};
 use generated::generated_assets::{ID_CONFIG, get_api_files, get_testcases_map};
 use headless_chrome::{Browser, LaunchOptions, protocol::cdp};
 use serde_json::Value;
 
-pub fn run_tests(options: LaunchOptions<'_>, param: String, mut args: Args) {
+pub fn run_tests(options: LaunchOptions<'_>, param: RunMode) {
     let browser = Browser::new(options).unwrap();
     let tab = browser.new_tab().unwrap();
     for value in get_api_files() {
@@ -23,11 +22,15 @@ pub fn run_tests(options: LaunchOptions<'_>, param: String, mut args: Args) {
         .unwrap();
     }
 
-    tab.navigate_to(&format!("file:///{param}")).unwrap();
+    tab.navigate_to(&format!("file:///{}", param.file_path)).unwrap();
 
     let content_of_id = get_content_from_bytes(ID_CONFIG);
-    let content_of_id = parse_config(content_of_id, param);
-    let onlytype = args.next().unwrap_or_default();
+    let content_of_id = parse_config(content_of_id, param.file_path);
+    let onlytype = if let Some(tag) = param.tag{
+        tag.to_string()
+    }else{
+        "".to_string()
+    };
 
     let test_cases_map = get_testcases_map();
     let mut result_util = ResultUtil::new(test_cases_map.len());
