@@ -54,7 +54,7 @@ const queryAllFromBody = (query) => {
 }
 
 const getErrorFieldContentByInputId = (form, inputId) => {
-	const errorfield = form.querySelector(`input[id="${inputId}"]+.error`);
+	const errorfield = form.querySelector(`input[id="${inputId}"]~.error`);
 	assertNotUndefined(errorfield, `${inputId} bevitelő mező mellett nincs error megjelenítésére szolgáló elem`)
 	return errorfield.innerText;
 }
