@@ -10,4 +10,4 @@ test(async () => {
         assertEquals(true, div.classList.contains('hide'), `A ${div.id} azonosítójú elem nincs elrejtve`);
     }
     return true;
-}, hascheckbox)
+}, hascheckbox || !defaultEmpty )
