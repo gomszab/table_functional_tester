@@ -13,8 +13,8 @@ test(async () => {
 
 	const [_, newRows] = queryTableByTbodyId(rowtablebody, true);
 	const errorMessageFirst = getErrorFieldContentByInputId(form, 'elso');
-	assertNotEmptyString(errorMessageFirst);
+	assertNotEmptyString(errorMessageFirst, "Első mezőnél nem jelenik meg hibaüzenet");
 	const errorMessageSecond = getErrorFieldContentByInputId(form, 'masodik');
-	assertNotEmptyString(errorMessageSecond);
+	assertNotEmptyString(errorMessageSecond, "Második mezőnél nem jelenik meg hibaüzenet");
 	return assertEquals(originalRows, newRows, "Sort fűzött hozzá a táblázathoz a validáció ellenére");
 })

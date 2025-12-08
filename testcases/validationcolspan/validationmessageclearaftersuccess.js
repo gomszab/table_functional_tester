@@ -14,7 +14,7 @@ test(async () => {
 
     const [_, newRows] = queryTableByTbodyId(coltablebody, true);
     const errorMessageMasodik = getErrorFieldContentByInputId(form, 'masodik');
-    assertNotEmptyString(errorMessageMasodik);
+    assertNotEmptyString(errorMessageMasodik,  "Második mezőnél nem jelenik meg hibaüzenet");
     assertEquals(originalRows, newRows, "Sort fűzött hozzá a táblázathoz a validáció ellenére");
     setInputValueByid(form, 'masodik', 'test item 2');
     await triggerSubmit(form)
